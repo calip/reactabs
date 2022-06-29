@@ -1,12 +1,14 @@
 import dynamic from 'next/dynamic'
 
-const Cesium = dynamic(
-  () => import('../components/Cesium'),
+const CesiumViewer = dynamic(
+  () => import('../components/cesiumViewer'),
   { ssr: false }
 )
 
-export default function Index() {
+function Index() {
   return (
-    <Cesium />
+    <CesiumViewer />
   )
 }
+
+export default Index
