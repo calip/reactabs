@@ -1,4 +1,3 @@
-import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
 const Cesium = dynamic(
@@ -6,13 +5,8 @@ const Cesium = dynamic(
   { ssr: false }
 )
 
-export default function Home() {
+export default function Index() {
   return (
-    <>
-      <Head>
-        <link rel="stylesheet" href="cesium/Widgets/widgets.css" />
-      </Head>
-      <Cesium />
-    </>
+    <Cesium />
   )
 }
