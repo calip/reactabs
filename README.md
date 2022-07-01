@@ -1,4 +1,4 @@
-This is a This is a Aircraft Tasking Order project bootstrapped with [Next.js](https://nextjs.org/).
+This is a Aircraft Tasking Order project bootstrapped with [Next.js](https://nextjs.org/).
 
 ![Screenshot](screenshot.png)
 
