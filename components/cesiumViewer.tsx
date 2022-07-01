@@ -3,6 +3,7 @@ import { Viewer } from "resium";
 import * as Resium from "resium";
 import * as Cesium from 'cesium'
 import Entity from "cesium/Source/DataSources/Entity";
+import CesiumEntity from "./cesiumEntity";
 
 class CesiumViewer extends Component {
   public viewer: Cesium.Viewer | undefined;
@@ -60,7 +61,9 @@ class CesiumViewer extends Component {
         },
       });
 
-      this.setDragHandler (this.viewer);
+      // this.setDragHandler (this.viewer);
+      const drag = new CesiumEntity(this.viewer);
+      drag.enable();
       this.viewer.trackedEntity = undefined;
       this.viewer.zoomTo(
         this.viewer.entities,
@@ -68,60 +71,7 @@ class CesiumViewer extends Component {
       );
     }
   }
-
-
-  setDragHandler(viewer: Cesium.Viewer) {
-    const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
-    const fscene = viewer.scene;
-    let touchDownPos = new Cesium.Cartesian2();
-    let moving = false;
-    let en: any = null;
-
-    handler.setInputAction(
-      (touchDown: any) => {
-        touchDownPos = touchDown.position;
-        en = fscene.pick(touchDownPos);
-        moving = true;
-        if(en) {
-          fscene.screenSpaceCameraController.enableInputs = false;
-          handler.setInputAction (
-              (touchMove: any) => {
-                if (en && en.id) {
-                  const ray = viewer.camera.getPickRay(touchMove.endPosition);
-
-                  if(ray) {
-                    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
-
-                    if(cartesian) {
-                      const ellipsoid = viewer.scene.globe.ellipsoid;
-                      const c = ellipsoid.cartesianToCartographic(cartesian);
-                      const origin = en.id.position.getValue(viewer.clock.currentTime);
-
-                      const cc = ellipsoid.cartesianToCartographic(origin);
-                      en.id.position = new Cesium.CallbackProperty(() => {
-                        return Cesium.Cartesian3.fromRadians(c.longitude, c.latitude, cc.height)
-                      }, false);
-                    }
-                  }
-                }
-              },
-              Cesium.ScreenSpaceEventType.MOUSE_MOVE
-          );
-
-          handler.setInputAction(
-            (touchUp: any) => {
-              moving = false;
-              en = null;
-              fscene.screenSpaceCameraController.enableRotate = true;
-            },
-            Cesium.ScreenSpaceEventType.LEFT_UP
-          )
-        }
-      },
-      Cesium.ScreenSpaceEventType.LEFT_DOWN
-    );
-  }
-
+  
   computeCirclularFlight(lon: any, lat: any, radius: any, viewer: any) {
     const property = new Cesium.SampledPositionProperty();
     for (let i = 0; i <= 360; i += 45) {
