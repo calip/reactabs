@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Viewer } from "resium";
 import * as Resium from "resium";
 import * as Cesium from 'cesium'
+import Entity from "cesium/Source/DataSources/Entity";
+import CesiumEntity from "./cesiumEntity";
 
 class CesiumViewer extends Component {
   public viewer: Cesium.Viewer | undefined;
@@ -23,23 +25,24 @@ class CesiumViewer extends Component {
 
       this.viewer.timeline.zoomTo(this.start, this.stop);
 
-      const position = this.computeCirclularFlight(106.774124, -6.200000, 0.1, this.viewer);
+      const position = Cesium.Cartesian3.fromDegrees(106.774124, -6.200000, 100);
+
 
       //Actually create the entity
       const entity = this.viewer.entities.add({
         //Set the entity availability to the same interval as the simulation time.
-        availability: new Cesium.TimeIntervalCollection([
-          new Cesium.TimeInterval({
-            start: this.start,
-            stop: this.stop,
-          }),
-        ]),
+        // availability: new Cesium.TimeIntervalCollection([
+        //   new Cesium.TimeInterval({
+        //     start: this.start,
+        //     stop: this.stop,
+        //   }),
+        // ]),
 
         //Use our computed positions
         position: position,
 
         //Automatically compute orientation based on position movement.
-        orientation: new Cesium.VelocityOrientationProperty(position),
+        // orientation: new Cesium.VelocityOrientationProperty(position),
 
         //Load the Cesium plane model to represent the entity
         model: {
@@ -58,6 +61,9 @@ class CesiumViewer extends Component {
         },
       });
 
+      // this.setDragHandler (this.viewer);
+      const drag = new CesiumEntity(this.viewer);
+      drag.enable();
       this.viewer.trackedEntity = undefined;
       this.viewer.zoomTo(
         this.viewer.entities,
@@ -65,7 +71,7 @@ class CesiumViewer extends Component {
       );
     }
   }
-
+  
   computeCirclularFlight(lon: any, lat: any, radius: any, viewer: any) {
     const property = new Cesium.SampledPositionProperty();
     for (let i = 0; i <= 360; i += 45) {
