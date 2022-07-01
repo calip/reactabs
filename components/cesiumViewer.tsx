@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Viewer } from "resium";
 import * as Resium from "resium";
 import * as Cesium from 'cesium'
+import Entity from "cesium/Source/DataSources/Entity";
 
 class CesiumViewer extends Component {
   public viewer: Cesium.Viewer | undefined;
@@ -23,23 +24,24 @@ class CesiumViewer extends Component {
 
       this.viewer.timeline.zoomTo(this.start, this.stop);
 
-      const position = this.computeCirclularFlight(106.774124, -6.200000, 0.1, this.viewer);
+      const position = Cesium.Cartesian3.fromDegrees(106.774124, -6.200000, 100);
+
 
       //Actually create the entity
       const entity = this.viewer.entities.add({
         //Set the entity availability to the same interval as the simulation time.
-        availability: new Cesium.TimeIntervalCollection([
-          new Cesium.TimeInterval({
-            start: this.start,
-            stop: this.stop,
-          }),
-        ]),
+        // availability: new Cesium.TimeIntervalCollection([
+        //   new Cesium.TimeInterval({
+        //     start: this.start,
+        //     stop: this.stop,
+        //   }),
+        // ]),
 
         //Use our computed positions
         position: position,
 
         //Automatically compute orientation based on position movement.
-        orientation: new Cesium.VelocityOrientationProperty(position),
+        // orientation: new Cesium.VelocityOrientationProperty(position),
 
         //Load the Cesium plane model to represent the entity
         model: {
@@ -58,12 +60,66 @@ class CesiumViewer extends Component {
         },
       });
 
+      this.setDragHandler (this.viewer);
       this.viewer.trackedEntity = undefined;
       this.viewer.zoomTo(
         this.viewer.entities,
         new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90))
       );
     }
+  }
+
+
+  setDragHandler(viewer: Cesium.Viewer) {
+    const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+    const fscene = viewer.scene;
+    let touchDownPos = new Cesium.Cartesian2();
+    let moving = false;
+    let en: any = null;
+
+    handler.setInputAction(
+      (touchDown: any) => {
+        touchDownPos = touchDown.position;
+        en = fscene.pick(touchDownPos);
+        moving = true;
+        if(en) {
+          fscene.screenSpaceCameraController.enableInputs = false;
+          handler.setInputAction (
+              (touchMove: any) => {
+                if (en && en.id) {
+                  const ray = viewer.camera.getPickRay(touchMove.endPosition);
+
+                  if(ray) {
+                    const cartesian = viewer.scene.globe.pick(ray, viewer.scene);
+
+                    if(cartesian) {
+                      const ellipsoid = viewer.scene.globe.ellipsoid;
+                      const c = ellipsoid.cartesianToCartographic(cartesian);
+                      const origin = en.id.position.getValue(viewer.clock.currentTime);
+
+                      const cc = ellipsoid.cartesianToCartographic(origin);
+                      en.id.position = new Cesium.CallbackProperty(() => {
+                        return Cesium.Cartesian3.fromRadians(c.longitude, c.latitude, cc.height)
+                      }, false);
+                    }
+                  }
+                }
+              },
+              Cesium.ScreenSpaceEventType.MOUSE_MOVE
+          );
+
+          handler.setInputAction(
+            (touchUp: any) => {
+              moving = false;
+              en = null;
+              fscene.screenSpaceCameraController.enableRotate = true;
+            },
+            Cesium.ScreenSpaceEventType.LEFT_UP
+          )
+        }
+      },
+      Cesium.ScreenSpaceEventType.LEFT_DOWN
+    );
   }
 
   computeCirclularFlight(lon: any, lat: any, radius: any, viewer: any) {
