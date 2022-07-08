@@ -67,7 +67,7 @@ class CesiumEntity {
       
           const cc = ellipsoid.cartesianToCartographic(origin)
       
-          this.entity.id.position = new Cesium.CallbackProperty(function () {
+          this.entity.id.position = new Cesium.CallbackProperty(() => {
               return Cesium.Cartesian3.fromRadians(c.longitude, c.latitude, cc.height)
           }, false)
         }
