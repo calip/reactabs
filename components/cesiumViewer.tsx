@@ -1,16 +1,15 @@
-import React, { Component } from "react";
-import { Viewer } from "resium";
-import * as Resium from "resium";
+import React, { Component } from "react"
+import { Viewer } from "resium"
+import * as Resium from "resium"
 import * as Cesium from 'cesium'
-import Entity from "cesium/Source/DataSources/Entity";
-import CesiumEntity from "./cesiumEntity";
+import CesiumEntity from "./cesiumEntity"
 
 class CesiumViewer extends Component {
-  public viewer: Cesium.Viewer | undefined;
+  public viewer: Cesium.Viewer | undefined
   
   componentDidMount() {
     if (this.viewer) {
-      const position = Cesium.Cartesian3.fromDegrees(106.774124, -6.200000, 100);
+      const position = Cesium.Cartesian3.fromDegrees(106.774124, -6.200000, 100)
       //Actually create the entity
       const entity = this.viewer.entities.add({
         position: position,
@@ -19,15 +18,15 @@ class CesiumViewer extends Component {
           uri:"/models/Cesium_Air.glb",
           minimumPixelSize: 64,
         },
-      });
+      })
 
-      const drag = new CesiumEntity(this.viewer);
-      drag.enable();
+      const drag = new CesiumEntity(this.viewer)
+      drag.enable()
       
       this.viewer.zoomTo(
         this.viewer.entities,
         new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-90))
-      );
+      )
     }
   }
 
@@ -35,7 +34,7 @@ class CesiumViewer extends Component {
     return (
       <Viewer full
         ref={e => {
-          this.viewer = e ? e.cesiumElement : undefined;
+          this.viewer = e ? e.cesiumElement : undefined
         }}
         infoBox={true}
         selectionIndicator={false}
@@ -43,6 +42,6 @@ class CesiumViewer extends Component {
       />
     );
   }
-};
+}
 
 export default CesiumViewer

@@ -1,31 +1,31 @@
 import * as Cesium from 'cesium'
 
 class CesiumEntity {
-  _viewer: Cesium.Viewer;
-  entity: any;
-  moving: boolean;
-  handler: Cesium.ScreenSpaceEventHandler;
-  private _leftDown: any;
-  private _leftUp: any;
-  private _move: any;
+  _viewer: Cesium.Viewer
+  entity: any
+  moving: boolean
+  handler: Cesium.ScreenSpaceEventHandler
+  private _leftDown: any
+  private _leftUp: any
+  private _move: any
 
   constructor(viewer: Cesium.Viewer) {
-    this._viewer = viewer;
-    this.moving = false;
+    this._viewer = viewer
+    this.moving = false
 
-    this._leftDown = this._leftDownHandler.bind(this);
-    this._leftUp = this._leftUpHandler.bind(this);
-    this._move = this._moveHandler.bind(this);
+    this._leftDown = this._leftDownHandler.bind(this)
+    this._leftUp = this._leftUpHandler.bind(this)
+    this._move = this._moveHandler.bind(this)
 
-    this.handler = new Cesium.ScreenSpaceEventHandler(this._viewer.canvas);
+    this.handler = new Cesium.ScreenSpaceEventHandler(this._viewer.canvas)
   }
     
   enable() {
-    this.handler.setInputAction(this._leftDown, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+    this.handler.setInputAction(this._leftDown, Cesium.ScreenSpaceEventType.LEFT_DOWN)
 
     this.handler.setInputAction(this._leftUp, Cesium.ScreenSpaceEventType.LEFT_UP)
 
-    this.handler.setInputAction(this._move, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    this.handler.setInputAction(this._move, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
   }
 
   disable() {
@@ -74,6 +74,6 @@ class CesiumEntity {
       }
     }
   }
-};
+}
 
 export default CesiumEntity
