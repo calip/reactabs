@@ -5,12 +5,12 @@ import CesiumEntity from "./cesiumEntity"
 
 
 const CesiumViewer = (prop: any) => {
-  const { entities } = prop
+  const { data } = prop
   const ref = useRef<Resium.CesiumComponentRef<Cesium.Viewer>>(null)
   
   useEffect(() => {
-    if(ref.current?.cesiumElement && entities) {
-      entities.map((entity: any) => {
+    if(ref.current?.cesiumElement && data) {
+      data.entities.map((entity: any) => {
         const position = Cesium.Cartesian3.fromDegrees(entity.longitude, entity.latitude, entity.height)
         ref.current?.cesiumElement?.entities.add({
           position: position,
@@ -21,8 +21,8 @@ const CesiumViewer = (prop: any) => {
         })
       })
       
-      const drag = new CesiumEntity(ref.current?.cesiumElement)
-      drag.enable()
+      const entity = new CesiumEntity(ref.current?.cesiumElement)
+      entity.enable()
       
       ref.current?.cesiumElement.zoomTo(
         ref.current?.cesiumElement.entities,

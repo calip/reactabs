@@ -23,6 +23,6 @@ export default function Index(props: any) {
   if (isLoading) return <p>Loading...</p>
 
   return (
-    <CesiumViewer entities={data} />
+    <CesiumViewer data={data} />
   )
 }
