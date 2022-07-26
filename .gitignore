@@ -32,3 +32,4 @@ yarn-error.log*
 .vercel
 public/assets/maki
 json
+entityDb.tsx
