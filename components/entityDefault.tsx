@@ -1,5 +1,3 @@
-import * as Cesium from 'cesium'
-
 const EntityDefault = () => {
   const result = {
     Callsign: "F-16 A/B",
