@@ -1,38 +1,32 @@
 import * as Cesium from 'cesium'
 import { v4 as uuidv4 } from 'uuid'
+import helpers from '../helpers/helpers'
 
 class CesiumEntity {
-  _viewer: Cesium.Viewer
   tfgFraction: number
   posEmitter: any
   tfgDt: number
   tfgHeading: number
   pointHeading: number
-
   state: any
   avatar: any
   key: any
   modelUri: string
   pos: any
   ori: any
-
   private radarCallback: any
   private radarHeightCallback: any
-
   constructor(entity: any, viewer: Cesium.Viewer) {
-    this._viewer = viewer
     this.tfgFraction = 0.0
     this.posEmitter = undefined
     this.tfgDt = 33
     this.tfgHeading = 0.0
     this.pointHeading = 0.0
-
     // this.moveTimeModifier = 1
     // this.parent = undefined
     // this.hasScheduleStart = false
     // this.childNumber = 0
     // this.childIndex = -1
-
     this.state = {
       kind: entity.DISTypeID.Kind,
       domain: entity.DISTypeID.Domain,
@@ -58,8 +52,8 @@ class CesiumEntity {
       displayDistance: 10000000,
       coverRadius: 70 * 1.852 * 1000,
       rotOffset: 0,
-      labelPosX: 0, //10
-      labelPosY: 40, //-10
+      labelPosX: 0, //  10
+      labelPosY: 40, // -10
       showCover: false,
       hasRoute: false,
       showTypeId: false,
@@ -78,10 +72,10 @@ class CesiumEntity {
       showEntity: true,
       disabled: false,
     }
-    this.cloneState(entity.state, this.state)
+    helpers.cloneState(entity.state, this.state)
     this.key = uuidv4()
     this.modelUri = ''
-    this.modelUri = entity.VisualModel['def']
+    this.modelUri = entity.VisualModel.def
     this.pos = Cesium.Cartesian3.fromDegrees(
       this.state.longitude,
       this.state.latitude,
@@ -95,7 +89,7 @@ class CesiumEntity {
     this.avatar = new Cesium.Entity({
       id: this.key,
       position: this.pos,
-      orientation: new Cesium.CallbackProperty((time, result) => {
+      orientation: new Cesium.CallbackProperty(() => {
         return this.ori.clone()
       }, false),
 
@@ -128,7 +122,7 @@ class CesiumEntity {
         color: Cesium.Color.DEEPSKYBLUE,
         colorBlendMode: Cesium.ColorBlendMode.REPLACE,
         heightReference:
-          this.state.domain != 2
+          this.state.domain !== 2
             ? Cesium.HeightReference.CLAMP_TO_GROUND
             : Cesium.HeightReference.NONE,
         distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
@@ -140,17 +134,14 @@ class CesiumEntity {
     viewer.entities.add(this.avatar)
     // viewer.scene.globe.show = false
   }
-
   setPosByRad = (lon: number, lat: number, height: number) => {
     this.pos = Cesium.Cartesian3.fromRadians(lon, lat, height)
     this.avatar.position = this.pos
   }
-
   setPosByDeg = (lon: number, lat: number, height: number) => {
     this.pos = Cesium.Cartesian3.fromDegrees(lon, lat, height)
     this.avatar.position = this.pos
   }
-
   setOriByHPR = (heading: number, pitch: number, roll: number) => {
     const hpr = new Cesium.HeadingPitchRoll(
       heading - Math.PI / 2 + (this.state.rotOffset * pitch) / 180.0,
@@ -159,13 +150,11 @@ class CesiumEntity {
     )
     this.ori = Cesium.Transforms.headingPitchRollQuaternion(this.pos, hpr)
   }
-
   setDisplayDistance = (distance: number) => {
     this.state.displayDistance = distance
     this.avatar.model.distanceDisplayCondition =
       new Cesium.DistanceDisplayCondition(0, this.state.displayDistance)
   }
-
   setLabelPosX = (pos: any) => {
     this.state.labelPosX = pos
     this.avatar.label.pixelOffset = new Cesium.Cartesian2(
@@ -173,7 +162,6 @@ class CesiumEntity {
       this.avatar.label.pixelOffset.y
     )
   }
-
   setLabelPosY = (pos: any) => {
     this.state.labelPosY = pos
     this.avatar.label.pixelOffset = new Cesium.Cartesian2(
@@ -181,24 +169,8 @@ class CesiumEntity {
       pos
     )
   }
-
-  updateHudDisplay = () => {
-    // this.avatar.label.text =
-  }
-
-  cloneState = (sourceState: any, targetState: any) => {
-    for (var el in sourceState) {
-      if (!sourceState.hasOwnProperty(el)) continue
-      if (el == 'id') continue
-      if (el == 'state') continue
-      if (el == 'hasRoute') continue
-      if (el == 'disabled') continue
-      targetState[el] = sourceState[el]
-    }
-  }
-
   setStateLabels = (en: any) => {
-    this.cloneState(en, this.state)
+    helpers.cloneState(en, this.state)
     const lon = Number(this.state.longitude)
     const lat = Number(this.state.latitude)
     const alt = Number(this.state.altitude)
@@ -213,5 +185,4 @@ class CesiumEntity {
     this.setLabelPosY(this.state.labelPosY)
   }
 }
-
 export default CesiumEntity

@@ -6,17 +6,16 @@ const CesiumViewer = dynamic(() => import('../components/cesiumViewer'), {
   ssr: false,
 })
 
-export default function Index(props: any) {
+export default function Index() {
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      const data = await Entity.get()
-      setData(data)
-      setLoading(false)
-    })()
+    setLoading(true)
+    Entity.get()
+      .then((response) => response)
+      .then((result) => setData(result))
+    setLoading(false)
   }, [])
 
   if (isLoading) return <p>Loading...</p>

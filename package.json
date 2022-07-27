@@ -9,6 +9,7 @@
     "lint": "next lint",
     "check-format": "prettier --check .",
     "check-lint": "eslint . --ext ts --ext tsx --ext js",
+    "lint-fix": "eslint . --ext ts --ext tsx --ext js --fix",
     "check-types": "tsc --pretty --noEmit",
     "format": "prettier --write .",
     "postinstall": "symlink-dir node_modules/cesium/Build/Cesium public/cesium"

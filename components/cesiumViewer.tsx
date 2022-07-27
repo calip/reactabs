@@ -13,7 +13,6 @@ const CesiumViewer = (prop: any) => {
   useEffect(() => {
     if (ref.current?.cesiumElement && data) {
       const viewer = ref.current?.cesiumElement
-
       viewer.camera.flyTo({
         destination: Cesium.Cartesian3.fromDegrees(118, -3.0, 3800000.0),
         orientation: {
@@ -24,10 +23,10 @@ const CesiumViewer = (prop: any) => {
       })
 
       viewer.scene.screenSpaceCameraController.enableTilt = false
-      data.entities.map((e: any) => {
+      data.entities.forEach((e: any) => {
         const entityDb = new EntityDb()
         const res = entityDb.getAsset(e.typeId)
-        const entity = res ? res : entityDefault() // TODO load dynamics asset specs
+        const entity = res ?? entityDefault() // TODO load dynamics asset specs
 
         const en = new CesiumEntity(entity, viewer)
         en.setStateLabels(e)
@@ -36,7 +35,7 @@ const CesiumViewer = (prop: any) => {
         const dragHandler = new CesiumDrag(en, viewer)
       })
     }
-  }, [])
+  }, [data])
 
   return <Resium.Viewer ref={ref} />
 }

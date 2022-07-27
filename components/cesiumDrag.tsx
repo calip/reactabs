@@ -87,7 +87,7 @@ class CesiumDrag {
           this.prevCartoPos = Cesium.Cartographic.fromCartesian(this.prevPos)
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
-        this.screen.setInputAction((touchUp: any) => {
+        this.screen.setInputAction(() => {
           this.fscene.screenSpaceCameraController.enableInputs = true
           this.screen.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)
           const cr = Cesium.Cartographic.fromCartesian(this.en.pos)
