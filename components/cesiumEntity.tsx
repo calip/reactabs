@@ -47,14 +47,14 @@ class CesiumEntity {
       id: 0,
       typeId: entity.callsign,
       state: 1,
-      callsign: "",
-      title: "",
-      flag: "blue",
+      callsign: '',
+      title: '',
+      flag: 'blue',
       fuel: 100.0,
       burnRate: 0.00002,
       distance: 0.0,
       radarRadius: 70 * 1.852 * 1000,
-      radarSwath: Math.PI * 360 / 180.0,
+      radarSwath: (Math.PI * 360) / 180.0,
       displayDistance: 10000000,
       coverRadius: 70 * 1.852 * 1000,
       rotOffset: 0,
@@ -76,46 +76,65 @@ class CesiumEntity {
       showRadar: false,
       showRadarScan: false,
       showEntity: true,
-      disabled: false
+      disabled: false,
     }
     this.cloneState(entity.state, this.state)
     this.key = uuidv4()
-    this.modelUri = ""
-    this.modelUri = entity.VisualModel["def"]
-    this.pos = Cesium.Cartesian3.fromDegrees(this.state.longitude, this.state.latitude, this.state.altitude)
-    this.ori = Cesium.Transforms.headingPitchRollQuaternion(this.pos, new Cesium.HeadingPitchRoll(Math.PI, 0.0, 0.0))
+    this.modelUri = ''
+    this.modelUri = entity.VisualModel['def']
+    this.pos = Cesium.Cartesian3.fromDegrees(
+      this.state.longitude,
+      this.state.latitude,
+      this.state.altitude
+    )
+    this.ori = Cesium.Transforms.headingPitchRollQuaternion(
+      this.pos,
+      new Cesium.HeadingPitchRoll(Math.PI, 0.0, 0.0)
+    )
 
     this.avatar = new Cesium.Entity({
       id: this.key,
       position: this.pos,
-      orientation: new Cesium.CallbackProperty((time, result) => { 
+      orientation: new Cesium.CallbackProperty((time, result) => {
         return this.ori.clone()
       }, false),
 
       label: {
         show: true,
-        font: "21px Arial",
+        font: '21px Arial',
         text: this.state.title,
-        horizontalOrigin: Cesium.HorizontalOrigin.CENTER, 
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         fillColor: Cesium.Color.WHITE,
         showBackground: true,
         backgroundColor: new Cesium.Color(0.1, 0.1, 0.1, 0.7),
         backgroundPadding: new Cesium.Cartesian2(10, 10),
-        pixelOffset: new Cesium.Cartesian2(this.state.labelPosX, this.state.labelPosY),
-        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, this.state.displayDistance),
-        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 0.65, 8.0e6, 1.0)
+        pixelOffset: new Cesium.Cartesian2(
+          this.state.labelPosX,
+          this.state.labelPosY
+        ),
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+          0,
+          this.state.displayDistance
+        ),
+        scaleByDistance: new Cesium.NearFarScalar(1.5e2, 0.65, 8.0e6, 1.0),
       },
       model: {
-          show: true,
-          scale: 0.8,
-          uri: this.modelUri,
-          minimumPixelSize: 48,
-          color: Cesium.Color.DEEPSKYBLUE,
-          colorBlendMode: Cesium.ColorBlendMode.REPLACE,
-          heightReference: this.state.domain != 2 ? Cesium.HeightReference.CLAMP_TO_GROUND : Cesium.HeightReference.NONE,
-          distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, this.state.displayDistance)
+        show: true,
+        scale: 0.8,
+        uri: this.modelUri,
+        minimumPixelSize: 48,
+        color: Cesium.Color.DEEPSKYBLUE,
+        colorBlendMode: Cesium.ColorBlendMode.REPLACE,
+        heightReference:
+          this.state.domain != 2
+            ? Cesium.HeightReference.CLAMP_TO_GROUND
+            : Cesium.HeightReference.NONE,
+        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+          0,
+          this.state.displayDistance
+        ),
       },
     })
     viewer.entities.add(this.avatar)
@@ -133,37 +152,48 @@ class CesiumEntity {
   }
 
   setOriByHPR = (heading: number, pitch: number, roll: number) => {
-    const hpr = new Cesium.HeadingPitchRoll(heading - Math.PI / 2 + this.state.rotOffset * pitch / 180.0, roll, -pitch)
+    const hpr = new Cesium.HeadingPitchRoll(
+      heading - Math.PI / 2 + (this.state.rotOffset * pitch) / 180.0,
+      roll,
+      -pitch
+    )
     this.ori = Cesium.Transforms.headingPitchRollQuaternion(this.pos, hpr)
   }
 
   setDisplayDistance = (distance: number) => {
     this.state.displayDistance = distance
-    this.avatar.model.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, this.state.displayDistance)
+    this.avatar.model.distanceDisplayCondition =
+      new Cesium.DistanceDisplayCondition(0, this.state.displayDistance)
   }
 
   setLabelPosX = (pos: any) => {
     this.state.labelPosX = pos
-    this.avatar.label.pixelOffset = new Cesium.Cartesian2(pos, this.avatar.label.pixelOffset.y)
+    this.avatar.label.pixelOffset = new Cesium.Cartesian2(
+      pos,
+      this.avatar.label.pixelOffset.y
+    )
   }
 
   setLabelPosY = (pos: any) => {
     this.state.labelPosY = pos
-    this.avatar.label.pixelOffset = new Cesium.Cartesian2(this.avatar.label.pixelOffset.x, pos)
+    this.avatar.label.pixelOffset = new Cesium.Cartesian2(
+      this.avatar.label.pixelOffset.x,
+      pos
+    )
   }
 
   updateHudDisplay = () => {
-    // this.avatar.label.text = 
+    // this.avatar.label.text =
   }
 
   cloneState = (sourceState: any, targetState: any) => {
     for (var el in sourceState) {
-        if (!sourceState.hasOwnProperty(el)) continue
-        if (el == "id") continue
-        if (el == "state") continue
-        if (el == "hasRoute") continue
-        if (el == "disabled") continue
-        targetState[el] = sourceState[el]
+      if (!sourceState.hasOwnProperty(el)) continue
+      if (el == 'id') continue
+      if (el == 'state') continue
+      if (el == 'hasRoute') continue
+      if (el == 'disabled') continue
+      targetState[el] = sourceState[el]
     }
   }
 
