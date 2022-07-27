@@ -7,5 +7,5 @@ export default async function handler(req: any, res: any) {
   
   const fileContents = await fs.readFile(jsonDirectory + '/entity.json', 'utf8');
   
-  res.status(200).json(fileContents);
+  res.status(200).json(JSON.parse(fileContents));
 }
