@@ -31,5 +31,5 @@ yarn-error.log*
 # vercel
 .vercel
 public/assets/maki
-json
+json/entity.json
 entityDb.tsx
