@@ -6,7 +6,7 @@ const CesiumViewer = dynamic(() => import('../components/cesiumViewer'), {
   ssr: false,
 })
 
-export default function Index() {
+const Index = () => {
   const [data, setData] = useState(null)
   const [isLoading, setLoading] = useState(false)
 
@@ -22,3 +22,5 @@ export default function Index() {
 
   return <CesiumViewer data={data} />
 }
+
+export default Index
