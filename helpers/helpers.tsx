@@ -20,6 +20,15 @@ const helpers = {
       return result
     })
   },
+  cloneObject: (ref: any, tgt: any = null) => {
+    if (!tgt) var tgt: any = {}
+    for (var el in ref) {
+      if (ref.hasOwnProperty(el)) {
+        tgt[el] = ref[el]
+      }
+    }
+    return tgt
+  },
 }
 
 export default helpers
