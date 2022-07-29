@@ -1,3 +1,5 @@
+import * as Cesium from 'cesium'
+
 const helpers = {
   cloneState: (sourceState: any, targetState: any) => {
     const result = targetState
@@ -22,12 +24,28 @@ const helpers = {
   },
   cloneObject: (ref: any, tgt: any = null) => {
     if (!tgt) var tgt: any = {}
-    for (var el in ref) {
+    for (const el in ref) {
       if (ref.hasOwnProperty(el)) {
         tgt[el] = ref[el]
       }
     }
     return tgt
+  },
+  cartoDelta: (ca: any, cb: any, ch = 0.0) => {
+    const res = new Cesium.Cartographic(
+      ca.longitude - cb.longitude,
+      ca.latitude - cb.latitude,
+      ch
+    )
+    return res
+  },
+  cartoAdd: (ca: any, cb: any, ch = 0.0) => {
+    const res = new Cesium.Cartographic(
+      ca.longitude + cb.longitude,
+      ca.latitude + cb.latitude,
+      ch
+    )
+    return res
   },
 }
 
