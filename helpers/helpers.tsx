@@ -22,13 +22,14 @@ const helpers = {
       return result
     })
   },
-  cloneObject: (ref: any, tgt: any = null) => {
-    if (!tgt) var tgt: any = {}
-    for (const el in ref) {
-      if (ref.hasOwnProperty(el)) {
-        tgt[el] = ref[el]
+  cloneObject: (ref: any, target: any = null) => {
+    if (!target) const tgt: any = {}
+    Object.keys(ref).map((key) => {
+      if (!Object.prototype.hasOwnProperty.call(ref, key)) {
+        tgt[key] = ref[key]
       }
-    }
+      return tgt
+    })
     return tgt
   },
   cartoDelta: (ca: any, cb: any, ch = 0.0) => {
