@@ -134,9 +134,11 @@ class MoveEntity {
     latNum /= arrayLength
     lonNum /= arrayLength
     heiNum /= arrayLength
-    cartoCenterOut.longitude = lonNum
-    cartoCenterOut.latitude = latNum
-    cartoCenterOut.height = heiNum
+
+    const cco = cartoCenterOut
+    cco.longitude = lonNum
+    cco.latitude = latNum
+    cco.height = heiNum
   }
 }
 
