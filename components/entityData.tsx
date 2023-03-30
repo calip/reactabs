@@ -73,7 +73,7 @@ const entityData = {
   appkey: '',
   timeArrow: 1.0,
   isTimeframedMode: false,
-  playSym: '&' + '#' + '9656;',
+  playSym: '&#9656;',
   playRevSym: '&plusmn;',
   playFastSym: '&plusmn;',
   timeArrowSym: '&plusmn;',
