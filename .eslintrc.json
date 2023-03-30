@@ -28,6 +28,7 @@
     // suppress errors for Function component is not a function declaration turning off allows us to use arrow functions
     "react/function-component-definition": ["off"],
 
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/lines-between-class-members": ["error", "never"]
   }
 }
